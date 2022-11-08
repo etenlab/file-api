@@ -10,6 +10,20 @@ import { createWriteStream } from 'fs';
 export class FileResolver {
   constructor(private readonly fileService: FileService) {}
 
+  @Mutation(() => Boolean)
+  async uploadFile(
+    @Args({ name: 'file', type: () => GraphQLUpload })
+    { createReadStream, filename }: FileUpload,
+  ) {
+    console.log(filename);
+    return new Promise(async (resolve, reject) =>
+      createReadStream()
+        .pipe(createWriteStream(`./upload/${filename}`))
+        .on('finish', () => resolve(true))
+        .on('error', () => reject(false)),
+    );
+  }
+
   @Mutation(() => File)
   createFile(@Args('createFileInput') createFileInput: CreateFileInput) {
     return this.fileService.create(createFileInput);

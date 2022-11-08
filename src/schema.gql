@@ -1,0 +1,33 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateFileInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type File {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Mutation {
+  createFile(createFileInput: CreateFileInput!): File!
+  removeFile(id: Int!): File!
+  updateFile(updateFileInput: UpdateFileInput!): File!
+  uploadFile(file: Upload!): Boolean!
+}
+
+type Query {
+  file(id: Int!): File!
+}
+
+input UpdateFileInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
