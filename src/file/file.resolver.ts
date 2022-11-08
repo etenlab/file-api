@@ -4,7 +4,8 @@ import { File } from './entities/file.entity';
 import { CreateFileInput } from './dto/create-file.input';
 import { UpdateFileInput } from './dto/update-file.input';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
-import { createWriteStream } from 'fs';
+import { S3 } from 'aws-sdk';
+import { v4 as uuid } from 'uuid';
 
 @Resolver(() => File)
 export class FileResolver {
@@ -15,13 +16,18 @@ export class FileResolver {
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename }: FileUpload,
   ) {
-    console.log(filename);
-    return new Promise(async (resolve, reject) =>
-      createReadStream()
-        .pipe(createWriteStream(`./upload/${filename}`))
-        .on('finish', () => resolve(true))
-        .on('error', () => reject(false)),
-    );
+    try {
+      const s3 = new S3({
+        apiVersion: '2022-11-08',
+        params: { Bucket: 'eternlab-file-storage' },
+      });
+      await s3
+        .upload({ Key: `${uuid()}-${fileName}`, Body: createReadStream() })
+        .promise();
+    } catch (err) {
+      console.log('File upload failed', err);
+      return false;
+    }
   }
 
   @Mutation(() => File)
