@@ -5,6 +5,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
+import { FileModule } from './file/file.module';
 dotenv.config();
 
 @Module({
@@ -16,9 +17,6 @@ dotenv.config();
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      subscriptions: {
-        'graphql-ws': true,
-      },
     }),
     TypeOrmModule.forRoot({
       keepConnectionAlive: true,
@@ -31,6 +29,7 @@ dotenv.config();
       autoLoadEntities: true,
       synchronize: true,
     }),
+    FileModule,
   ],
 })
 export class AppModule {}
