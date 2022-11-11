@@ -13,7 +13,8 @@ type Mutation {
 }
 
 type Query {
-  file: [File!]!
+  file(id: Int!): File!
+  fileList: [File!]!
 }
 
 """The `Upload` scalar type represents a file upload."""
