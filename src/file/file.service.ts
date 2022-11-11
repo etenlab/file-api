@@ -18,17 +18,23 @@ export class FileService {
 
   async uploadFile(readStream: ReadStream, filename: string): Promise<File> {
     try {
+      const accessKeyId = process.env.AWS_S3_ACCESS_ID;
+      const secretAccessKey = process.env.AWS_S3_SECRET_KEY;
+      const bucketName = process.env.AWS_S3_BUCKET_NAME;
+      const region = process.env.AWS_S3_REGION;
+      const fileKey = `${uuid()}-${filename}`;
+
       const s3Client = new S3Client({
-        region: process.env.AWS_S3_REGION,
+        region,
         credentials: {
-          accessKeyId: process.env.AWS_S3_ACCESS_ID,
-          secretAccessKey: process.env.AWS_S3_SECRET_KEY,
+          accessKeyId,
+          secretAccessKey,
         },
       });
 
       const uploadParams = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Key: `${uuid()}-${filename}`,
+        Bucket: bucketName,
+        Key: fileKey,
         Body: readStream,
       };
 
@@ -40,22 +46,26 @@ export class FileService {
         leavePartsOnError: false,
       });
 
-      const s3Result = await parallelUploads3.done();
+      await parallelUploads3.done();
+
       const file = this.fileRepository.create({
         filename,
-        url: s3Result['Location'],
+        url: `https://${bucketName}.s3.${region}.amazonaws.com/${fileKey}`,
       });
+
       return await this.fileRepository.save(file);
     } catch (err) {
       console.log('File upload failed', err);
     }
   }
 
-  findAll() {
-    return `This action returns all file`;
+  async getAll() {
+    return await this.fileRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
+  async findOne(id: number) {
+    return await this.fileRepository.findOneBy({
+      id,
+    });
   }
 }

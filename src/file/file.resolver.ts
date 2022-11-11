@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { FileService } from './file.service';
 import { File } from './file.model';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
@@ -12,7 +12,6 @@ export class FileResolver {
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename }: FileUpload,
   ) {
-    console.log('akak');
     const file = await this.fileService.uploadFile(
       createReadStream(),
       filename,
@@ -20,13 +19,13 @@ export class FileResolver {
     return file;
   }
 
-  @Query(() => [File], { name: 'file' })
-  findAll() {
-    return this.fileService.findAll();
+  @Query(() => [File], { name: 'fileList' })
+  async getAll() {
+    return await this.fileService.getAll();
   }
 
-  // @Query(() => File, { name: 'file' })
-  // findOne(@Args('id', { type: () => Int }) id: number) {
-  //   return this.fileService.findOne(id);
-  // }
+  @Query(() => File, { name: 'file' })
+  async findOne(@Args({ name: 'id', type: () => Int }) id: number) {
+    return await this.fileService.findOne(id);
+  }
 }
