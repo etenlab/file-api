@@ -4,8 +4,8 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as dotenv from 'dotenv';
 import { FileModule } from './file/file.module';
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Module({
