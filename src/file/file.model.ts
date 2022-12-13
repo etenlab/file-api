@@ -1,7 +1,9 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity(`files`)
+@Entity(`files`, {
+  schema: `admin`,
+})
 @ObjectType()
 export class File {
   @PrimaryGeneratedColumn()
