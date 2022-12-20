@@ -12,6 +12,8 @@ export class FileResolver {
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename }: FileUpload,
   ) {
+
+    console.log(createReadStream, filename);
     const file = await this.fileService.uploadFile(
       createReadStream(),
       filename,
