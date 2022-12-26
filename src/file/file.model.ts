@@ -12,9 +12,17 @@ export class File {
 
   @Column()
   @Field(() => String)
-  filename: string;
+  file_name: string;
+
+  @Column()
+  @Field(() => Int)
+  file_size: number;
 
   @Column()
   @Field(() => String)
-  url: string;
+  file_type: string;
+
+  @Column()
+  @Field(() => String)
+  file_url: string;
 }
