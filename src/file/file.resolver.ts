@@ -10,13 +10,15 @@ export class FileResolver {
   @Mutation(() => File)
   async uploadFile(
     @Args({ name: 'file', type: () => GraphQLUpload })
-    { createReadStream, filename }: FileUpload,
+    { createReadStream, filename: file_name }: FileUpload,
+    @Args({ name: 'file_type', type: () => String }) file_type: string,
+    @Args({ name: 'file_size', type: () => Int }) file_size: number,
   ) {
-
-    console.log(createReadStream, filename);
     const file = await this.fileService.uploadFile(
       createReadStream(),
-      filename,
+      file_name,
+      file_type,
+      file_size,
     );
     return file;
   }

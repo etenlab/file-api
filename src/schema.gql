@@ -3,13 +3,15 @@
 # ------------------------------------------------------
 
 type File {
-  filename: String!
+  file_name: String!
+  file_size: Int!
+  file_type: String!
+  file_url: String!
   id: Int!
-  url: String!
 }
 
 type Mutation {
-  uploadFile(file: Upload!): File!
+  uploadFile(file: Upload!, file_size: Int!, file_type: String!): File!
 }
 
 type Query {

@@ -16,13 +16,18 @@ export class FileService {
     private fileRepository: Repository<File>,
   ) {}
 
-  async uploadFile(readStream: ReadStream, filename: string): Promise<File> {
+  async uploadFile(
+    readStream: ReadStream,
+    file_name: string,
+    file_type: string,
+    file_size: number,
+  ): Promise<File> {
     try {
       const accessKeyId = process.env.AWS_S3_ACCESS_ID;
       const secretAccessKey = process.env.AWS_S3_SECRET_KEY;
       const bucketName = process.env.AWS_S3_BUCKET_NAME;
       const region = process.env.AWS_S3_REGION;
-      const fileKey = `${uuid()}-${filename}`;
+      const fileKey = `${uuid()}-${file_name}`;
 
       const s3Client = new S3Client({
         region,
@@ -41,7 +46,7 @@ export class FileService {
       const parallelUploads3 = new Upload({
         client: s3Client,
         params: uploadParams,
-        queueSize: 4,
+        queueSize: 40,
         partSize: 1024 * 1024 * 5,
         leavePartsOnError: false,
       });
@@ -49,8 +54,10 @@ export class FileService {
       await parallelUploads3.done();
 
       const file = this.fileRepository.create({
-        filename,
-        url: `https://${bucketName}.s3.${region}.amazonaws.com/${fileKey}`,
+        file_name,
+        file_type,
+        file_size,
+        file_url: `https://${bucketName}.s3.${region}.amazonaws.com/${fileKey}`,
       });
 
       return await this.fileRepository.save(file);
