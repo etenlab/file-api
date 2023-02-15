@@ -6,6 +6,7 @@ import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FileModule } from './file/file.module';
 import * as dotenv from 'dotenv';
+import { AppController } from './app.controller';
 dotenv.config();
 
 @Module({
@@ -30,5 +31,6 @@ dotenv.config();
     }),
     FileModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
